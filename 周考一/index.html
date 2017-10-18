@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			*{margin: 0;padding: 0;}
+			#box{width: 45%; margin: 40px auto;}
+			#box table{width: 100%;text-align: center;}
+			#box table th,td{height: 43px;border: 1px solid grey;}
+			#box .right{float:right;margin: 10px 10px;}
+			#box .btn{width: 25px;}
+		</style>
+	</head>
+	<body ng-app="app" ng-controller="aaa">
+	<div id="box">
+		<table cellpadding="0" cellspacing="0">
+		<tr>
+			<th>
+				全选：<input type="checkbox"  ng-click="qx()" ng-model="all"/>
+			</th>
+			<th>名称</th>
+			<th>单价</th>
+			<th>数量</th>
+			<th>总价</th>
+			<th>操作</th>
+		</tr>
+		<tr ng-repeat="x in pon">
+			<td>
+				<input type="checkbox"  ng-model="x.flag" ng-click="fx()"/>
+			</td>
+			<td>{{x.name}}</td>
+			<td>{{x.dj | currency:'￥'}}</td>
+			<td>
+				<button ng-click="jian($index)" class="btn">-</button>
+				<input type="text" ng-model="x.sl" />
+				<button ng-click="jia($index)" class="btn">+</button>
+			</td>
+			<td>{{x.dj*x.sl | currency:'￥'}}</td>
+			<td>
+				<button ng-click="del($index)">删除</button>
+			</td>
+		</tr>
+		</table>
+		<button ng-click="qk()" class="right">清空购物车</button>
+	</div>
+	</body>
+</html>
+<script src="js/angular-1.4.6.min.js" ></script>
+<script>
+	var app=angular.module("app",[]);
+	app.controller("aaa",["$scope",function(scop){
+		scop.pon=[
+			{flag:false,name:"荔枝",dj:10,sl:2},
+			{flag:false,name:"释迦",dj:50,sl:1}
+		]
+		//数量加
+		scop.jia=function(a){
+			if(scop.pon[a].sl<100){
+				scop.pon[a].sl++
+			}
+		}
+		//数量减
+		scop.jian=function(a){
+			if(scop.pon[a].sl>=1){
+				scop.pon[a].sl -=1
+			}
+		}
+		//全选
+		scop.qx = function(){
+			if(scop.all){
+				angular.forEach(scop.pon,function(index){
+					index.flag = true
+				})
+			}else{
+				angular.forEach(scop.pon,function(index){
+					index.flag = false
+				})
+			}
+		}
+
+		//反选
+		scop.fx = function(){
+			var a = 0;
+			angular.forEach(scop.pon,function(item){
+				if(item.flag){
+					a++
+					if(a==scop.pon.length){
+						scop.all = true
+					}else{
+						scop.all = false
+					}
+				}
+			})
+		}
+		// 选删
+		scop.del = function(){
+			function fun(){
+				angular.forEach(scop.pon,function(item,index){
+					if(item.flag==true){
+						scop.pon.splice(index,1)
+					}
+				})
+			}
+			fun()
+		}
+		// 清空
+		scop.qk = function(){
+			if(scop.all==true){
+				scop.pon = [];
+			}
+		}
+	}])
+</script>
